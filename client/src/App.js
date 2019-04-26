@@ -20,34 +20,24 @@ const styles = theme => ({
   }
 })
 
-const customers = [
-  { //실제로 보내고자하는 데이터 명시
-  'id' : 1,
-  'ondo' : '10.2',
-  'sepdo' : '13.2',
-  'hontak' : '15',
-  'toyang' : '16',
-  'pump' : '1'  
-},
-{ 
-  'id' : 2,
-  'ondo' : '20.2',
-  'sepdo' : '23.2',
-  'hontak' : '25',
-  'toyang' : '26',
-  'pump' : '1'  
-},
-{ 
-  'id' : 3,
-  'ondo' : '30.2',
-  'sepdo' : '33.2',
-  'hontak' : '35',
-  'toyang' : '36',
-  'pump' : '1'  
-}
-]
-
 class App extends Component {
+
+  state = {
+    customers: ""
+  }
+
+  componentDidMount() {
+    this.callApi()
+    .then(res => this.setState({customers: res}))
+    .catch(err => console.log(err));
+  }
+
+  callApi = async() => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+
   render() {
     const { classes } = this.props;
   return (
@@ -64,7 +54,7 @@ class App extends Component {
            </TableRow>
         </TableHead>
         <TableBody>
-      {  customers.map(c => {
+      {this.state.customers ? this.state.customers.map(c => {
           return (
             <Customer
             key={c.id}
@@ -76,7 +66,7 @@ class App extends Component {
             pump={c.pump}
             />
           )
-        })  }
+        }) : ""}
         </TableBody>
       </Table>
     </Paper>
